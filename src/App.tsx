@@ -13,13 +13,8 @@ function App() {
     },
 
     {
-      path: "/create-user",
+      path: "/update-user",
       element: <Update />,
-    },
-
-    {
-      path: "/eliminar",
-      element: <div>Hello world!</div>,
     }
   ]);
 
