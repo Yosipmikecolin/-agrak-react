@@ -8,16 +8,13 @@ export const getUsers = () => {
     return axios.get<User[]>(baseURL);
 }
 
-
 export const createUser = (user: Form) => {
     return axios.post<User[]>(baseURL, user);
 }
 
-
 export const updateUser = (user: Form, id: string) => {
     return axios.put<User[]>(baseURL + id, user);
 }
-
 
 
 export const deleteUser = (id: string) => {

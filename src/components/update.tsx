@@ -103,7 +103,7 @@ const Update = () => {
                         <button className="btn-back" type="button" onClick={redirectHome}>
                             back
                         </button>
-                        <h1>Create user</h1>
+                        <h1>{stateUser.id ? "Update user" : "Create user"}</h1>
                         <input type="text"
                             name='first_name'
                             placeholder="Fist name"

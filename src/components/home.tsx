@@ -3,7 +3,7 @@ import toast from 'react-hot-toast';
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { getUsers, deleteUser } from "../services/axios";
-import { addUser } from "../features/userSlice";
+import { addUser, clearUser } from "../features/userSlice";
 import { User } from "../interfaces/user.interface";
 
 import "../styles/home.css";
@@ -20,6 +20,7 @@ const Home = () => {
 
     useEffect(() => {
         funcionGetUsers();
+        dispatch(clearUser());
     }, []);
 
 
@@ -81,7 +82,7 @@ const Home = () => {
                                 return (
                                     <div className="card" key={index}>
                                         <div className="card-header">
-                                            <img src={user.avatar} alt="avatar" width={150} />
+                                            <img src={user.avatar} alt="avatar" />
                                         </div>
                                         <div className="card-body">
                                             <span><strong>First name: </strong>{user.first_name}</span>
@@ -89,6 +90,7 @@ const Home = () => {
                                             <span><strong>Second name: </strong>{user.second_name}</span>
                                             <br />
                                             <span><strong>Email: </strong>{user.email}</span>
+                                            <br />
                                             <button className="btn-update" onClick={() => { functionUpdateUser(user) }}>Update user</button>
                                             <button className="btn-delete" onClick={() => { functionDeleteUser(user.id) }}>Delete user</button>
                                         </div>
