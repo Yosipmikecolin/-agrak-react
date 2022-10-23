@@ -7,21 +7,79 @@ import { useDispatch, useSelector } from "react-redux";
 import toast from 'react-hot-toast';
 import { clearUser } from "../features/userSlice";
 import "../styles/update.css";
-import { User } from "../interfaces/user.interface";
-
+import { Avatars } from "../interfaces/avatar.interface";
 
 const Update = () => {
 
     const stateUser: Form = useSelector((state: any) => state.stateUser);
-    const [values, setValues] = useState<Form>({ first_name: '', second_name: '', email: '', avatar: '' });
+    const [submit, setSubmit] = useState(false);
+    const [valueAvatar, setValueAvatar] = useState<string>("");
+    const [values, setValues] = useState<Form>({ first_name: '', second_name: '', email: '', avatar: "" });
+    const [opacityModal, setOpacityModal] = useState("0");
     const navigation = useNavigate();
     const dispatch = useDispatch();
     const [loader, setLoader] = useState(false);
 
 
+
+
     useEffect(() => {
         setValues({ ...stateUser });
+        setValueAvatar(stateUser.avatar ? stateUser.avatar : "");
     }, [])
+
+
+
+    //LIST AVATAR
+    const avatars: Avatars[] = [
+
+        {
+            id: 1,
+            urlAvatar: "https://images.unsplash.com/photo-1599566150163-29194dcaad36?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80"
+        },
+        {
+            id: 2,
+            urlAvatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80"
+        }, {
+            id: 3,
+            urlAvatar: "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80"
+        }, {
+            id: 4,
+            urlAvatar: "https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80"
+        }, {
+            id: 5,
+            urlAvatar: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80"
+        }, {
+            id: 6,
+            urlAvatar: "https://images.unsplash.com/photo-1517849845537-4d257902454a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=735&q=80"
+        }
+
+    ]
+
+
+
+    const selectAvatar = (urlAvatar: string) => {
+        setValueAvatar(urlAvatar)
+        closeModal();
+        toast.success("successfully changed avatar");
+    }
+
+
+
+    const redirectHome = () => {
+        navigation("/");
+        dispatch(clearUser());
+    }
+
+
+    const searchAvatar = () => {
+        setOpacityModal("1");
+
+    }
+
+    const closeModal = () => {
+        setOpacityModal("0");
+    }
 
 
 
@@ -29,6 +87,7 @@ const Update = () => {
         if (stateUser.id) {
             try {
                 setLoader(true);
+                values.avatar = valueAvatar;
                 const response = await updateUser(values, stateUser.id);
                 if (response.status === 200 && response.data) {
                     setLoader(false);
@@ -43,6 +102,7 @@ const Update = () => {
         } else {
             try {
                 setLoader(true);
+                values.avatar = valueAvatar;
                 const response = await createUser(values);
                 if (response.status === 201 && response.data) {
                     setLoader(false);
@@ -59,14 +119,21 @@ const Update = () => {
     }
 
 
-    const redirectHome = () => {
-        navigation("/");
-        dispatch(clearUser());
-    }
-
 
     return (
         <section className="container-updated">
+            <div className="container-list-avatar" style={{ opacity: opacityModal, zIndex: (opacityModal === "0") ? "0" : "1" }}>
+                <div className="list-avatar">
+                    <button className="btn-modal" onClick={closeModal}>close</button>
+                    <div className="list">
+                        {avatars.map((avatar: Avatars) => {
+                            return (
+                                <img src={avatar.urlAvatar} className="card-avatar" alt="avatar" onClick={() => { selectAvatar(avatar.urlAvatar) }} />
+                            )
+                        })}
+                    </div>
+                </div>
+            </div>
             <Formik
                 enableReinitialize
                 initialValues={{ ...values }}
@@ -84,9 +151,7 @@ const Update = () => {
                         errors.email = 'Required';
                     }
 
-                    if (!values.avatar) {
-                        errors.avatar = 'Required';
-                    }
+
                     return errors;
                 }}
                 onSubmit={submitUser}
@@ -134,15 +199,13 @@ const Update = () => {
                         <input
                             type="text"
                             placeholder="Avatar"
-                            name='avatar'
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            value={values.avatar}
+                            value={valueAvatar}
+                            onClick={searchAvatar}
                         />
-                        <span className='error'>{errors.avatar && touched.avatar && errors.avatar}</span>
+                        <span className='error'>{submit && !valueAvatar && "Required"}</span>
 
 
-                        <button type='submit' className="btn-save">
+                        <button type='submit' className="btn-save" onClick={() => { setSubmit(true) }}>
                             {loader ? <div className="loader-btn"></div> : "UPDATE"}
                         </button>
                     </form>

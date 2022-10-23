@@ -38,10 +38,16 @@ main {
     display: flex;
     justify-content: center;
     height: 60%;
+    border-radius: 100%;
+
 }
 
 .card-header>img {
     object-fit: cover;
+    width: 160px;
+    height: 160px;
+    border-radius: 100%;
+
 }
 
 .card-body {
